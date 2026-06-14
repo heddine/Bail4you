@@ -2,8 +2,8 @@
   "name": "BailExpert Free",
   "short_name": "BailExpert",
   "description": "Générateur de contrats de bail ALUR gratuit",
-  "start_url": "/BailExpert-Free/",
-  "scope": "/BailExpert-Free/",
+  "start_url": "/Bail4you/",
+  "scope": "/Bail4you/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#ff6600",
@@ -11,25 +11,25 @@
   "lang": "fr",
   "icons": [
     {
-      "src": "/BailExpert-Free/icon-192.png",
+      "src": "/Bail4you/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/BailExpert-Free/icon-192.png",
+      "src": "/Bail4you/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "/BailExpert-Free/icon-512.png",
+      "src": "/Bail4you/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/BailExpert-Free/icon-512.png",
+      "src": "/Bail4you/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
@@ -37,11 +37,11 @@
   ],
   "screenshots": [
     {
-      "src": "/BailExpert-Free/icon-512.png",
+      "src": "/Bail4you/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "BailExpert Free - Contrat de bail"
+      "label": "BailExpert - Contrat de bail ALUR"
     }
   ]
 }
