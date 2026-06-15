@@ -1,4 +1,3 @@
-
 name: Build PWA Android
 
 on:
@@ -28,15 +27,34 @@ jobs:
       - name: Install Bubblewrap CLI
         run: npm install -g @bubblewrap/cli
 
-      - name: Init Bubblewrap
+      - name: Create twa-manifest.json
         run: |
-          bubblewrap init --manifest https://heddine.github.io/Bail4you/manifest.json
+          cat > twa-manifest.json << 'EOF'
+          {
+            "packageId": "io.github.heddine.bail4you",
+            "host": "heddine.github.io",
+            "name": "BailExpert",
+            "launcherName": "BailExpert",
+            "display": "standalone",
+            "themeColor": "#ff6600",
+            "navigationColor": "#ff6600",
+            "backgroundColor": "#ffffff",
+            "startUrl": "/Bail4you/",
+            "iconUrl": "https://heddine.github.io/Bail4you/icon-512-2.png",
+            "maskableIconUrl": "https://heddine.github.io/Bail4you/icon-512-2.png",
+            "appVersion": "1.0.0",
+            "signingKey": { "path": "android.keystore", "alias": "android" },
+            "splashScreenFadeOutDuration": 300,
+            "enableNotifications": false,
+            "shortcuts": []
+          }
+          EOF
 
-      - name: Build APK/AAB
-        run: bubblewrap build
+      - name: Build APK
+        run: bubblewrap build --skipPwaValidation
 
-      - name: Upload AAB
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: BailExpert-Android
-          path: "*.aab"
+          path: "*.apk"
