@@ -1,1 +1,32 @@
 
+name: Build PWA Android
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install PWABuilder CLI
+        run: npm install -g @pwabuilder/cli
+
+      - name: Build Android package
+        run: pwabuilder package -p android -u https://heddine.github.io/Bail4you/
+
+      - name: Upload AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: BailExpert-Android
+          path: "**/*.aab"
