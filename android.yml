@@ -1,1 +1,35 @@
 
+name: Build Android APK (Alternative PWA)
+
+on:
+  push:
+    branches:
+      - main  # Se lance à chaque fois que vous mettez à jour la branche principale
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Source Code
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+
+    - name: Install Bubblewrap CLI
+      run: npm install -g @bubblewrap/cli
+
+    - name: Initialize and Build APK
+      run: |
+        # Cette commande génère l'APK à partir de votre manifeste PWA
+        bubblewrap init --manifest=https://heddine.github.io/Bail4you/manifest.json --meta --no-interactive
+        bubblewrap build --skip-signing
+        
+    - name: Upload APK Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: app-release-apk
+        path: './*.apk'
+        
