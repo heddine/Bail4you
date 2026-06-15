@@ -14,19 +14,29 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
-      - name: Install PWABuilder CLI
-        run: npm install -g @pwabuilder/cli
+      - name: Install Bubblewrap CLI
+        run: npm install -g @bubblewrap/cli
 
-      - name: Build Android package
-        run: pwabuilder package -p android -u https://heddine.github.io/Bail4you/
+      - name: Init Bubblewrap
+        run: |
+          bubblewrap init --manifest https://heddine.github.io/Bail4you/manifest.json
+
+      - name: Build APK/AAB
+        run: bubblewrap build
 
       - name: Upload AAB
         uses: actions/upload-artifact@v4
         with:
           name: BailExpert-Android
-          path: "**/*.aab"
+          path: "*.aab"
