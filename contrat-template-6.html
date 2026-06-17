@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contrat de Location — BHSH IMMO</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: Arial, Helvetica, sans-serif; font-size: 8.5pt; color: #111; background: #ccc; padding: 16px; }
+
+.btn-bar { text-align:center; margin-bottom:14px; display:flex; justify-content:center; gap:8px; flex-wrap:wrap; }
+.btn { color:#fff; border:none; padding:10px 24px; font-size:10pt; border-radius:4px; cursor:pointer; font-weight:bold; }
+.btn-print { background:#1565C0; }
+.btn-close { background:#555; }
+
+.page {
+  background:#fff; width:210mm; margin:0 auto 20px;
+  padding:10mm 12mm 16mm; box-shadow:0 2px 12px rgba(0,0,0,0.3);
+  page-break-after: always; position:relative; min-height:297mm;
+}
+.page:last-of-type { page-break-after:auto; }
+
+/* COULEURS PAR TYPE */
+body.vide       { --col:#1565C0; --colL:#BBDEFB; --colBg:#F0F7FF; }
+body.meuble     { --col:#1B6E35; --colL:#C8E6C9; --colBg:#F1F8F2; }
+body.saisonnier { --col:#B45309; --colL:#FDE68A; --colBg:#FFFBEB; }
+body.professionnel { --col:#4A1D96; --colL:#DDD6FE; --colBg:#F5F3FF; }
+
+/* HEADER */
+.header-band { background:var(--col); color:#fff; padding:5px 10px 4px; width:67%; }
+.header-band h1 { font-size:10.5pt; font-weight:bold; text-transform:uppercase; }
+.header-band p { font-size:6.8pt; margin-top:2px; line-height:1.4; opacity:0.9; }
+.header-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:4px; }
+.header-badges { width:31%; padding-left:8px; }
+.cb-group { border:1px solid #555; padding:4px 6px; font-size:7.5pt; line-height:1.8; }
+.cb-row { display:flex; align-items:center; gap:4px; }
+input[type=checkbox] { width:11px; height:11px; accent-color:var(--col); }
+
+/* TITRES */
+.sec-title { background:var(--col); color:#fff; text-align:center; font-size:8.5pt; font-weight:bold; padding:3px 0; margin:6px 0 4px; text-transform:uppercase; letter-spacing:1px; }
+.sub-title { background:var(--colL); font-size:7.5pt; font-weight:bold; padding:2px 5px; margin:5px 0 3px; text-transform:uppercase; }
+
+/* PARTIES */
+.parties-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:4px; }
+.partie-block { border:1px solid #ccc; padding:5px 7px; min-height:75px; }
+.partie-label { font-weight:bold; font-size:8pt; color:var(--col); text-transform:uppercase; margin-bottom:4px; }
+.info-line { border-bottom:1px dotted #888; margin:3px 0; min-height:14px; padding-bottom:1px; font-size:8pt; }
+.info-lbl { font-size:6.8pt; color:#666; display:block; margin-bottom:1px; }
+
+/* CHAMPS */
+.field-row { display:flex; align-items:baseline; gap:4px; margin:3px 0; flex-wrap:wrap; }
+.field-lbl { font-size:7.5pt; white-space:nowrap; }
+.field-val { border-bottom:1px dotted #777; flex:1; min-width:60px; font-size:8pt; padding-bottom:1px; }
+.cb-inline { display:inline-flex; align-items:center; gap:3px; margin-right:8px; font-size:7.5pt; }
+.full-line { border-bottom:1px dotted #777; width:100%; margin:3px 0; min-height:14px; font-size:8pt; }
+
+/* GRILLES */
+.grid2 { display:grid; grid-template-columns:1fr 1fr; gap:5px; }
+.grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:5px; }
+
+/* RÉSUMÉ FINANCIER */
+.resume-box { border:1px solid var(--col); padding:5px 8px; margin:4px 0; background:var(--colBg); font-size:8pt; }
+.resume-row { display:flex; justify-content:space-between; border-bottom:1px solid #ddd; padding:2px 0; }
+.resume-row:last-child { border-bottom:none; font-weight:bold; }
+
+/* INVENTAIRE */
+.inv-grid { display:grid; grid-template-columns:1fr 1fr; gap:4px; margin:4px 0; }
+.inv-cat { border:1px solid #ccc; padding:4px 6px; }
+.inv-cat-title { font-size:7.5pt; font-weight:bold; color:var(--col); border-bottom:1px solid var(--colL); margin-bottom:3px; padding-bottom:2px; }
+.inv-item { display:flex; align-items:center; gap:3px; font-size:7.2pt; line-height:1.6; }
+
+/* ARTICLES */
+.art-title { background:var(--colL); font-size:8.5pt; font-weight:bold; padding:3px 7px; margin:8px 0 5px; border-left:4px solid var(--col); }
+.art-body { font-size:8pt; line-height:1.6; text-align:justify; margin-bottom:4px; }
+.art-sub { font-size:8pt; font-weight:bold; color:var(--col); margin:5px 0 2px; }
+.art-bullet { padding-left:14px; margin:2px 0 4px; }
+.art-bullet li { font-size:8pt; line-height:1.6; }
+.legal-note { font-size:6.8pt; color:#666; font-style:italic; margin:2px 0; }
+
+/* SIGNATURES */
+.sig-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:10px; }
+.sig-box { border:1px solid #aaa; padding:6px; min-height:65px; }
+.sig-lbl { font-size:7.5pt; font-weight:bold; color:var(--col); margin-bottom:3px; }
+.sig-name { font-size:8pt; font-weight:bold; }
+.sig-line { border-bottom:1px dotted #888; margin-top:28px; }
+
+/* FOOTER */
+.page-footer { position:absolute; bottom:6mm; left:12mm; right:12mm; display:flex; justify-content:space-between; border-top:1px solid #ccc; padding-top:3px; }
+.footer-note { font-size:6.3pt; color:#777; max-width:65%; line-height:1.4; }
+.footer-brand { text-align:right; font-size:6.8pt; color:#555; }
+.footer-brand strong { color:var(--col); display:block; font-size:7.5pt; }
+
+/* INFO BOX */
+.info-box { border-left:3px solid var(--col); background:var(--colBg); padding:4px 7px; margin:4px 0; font-size:7pt; line-height:1.5; }
+
+@media print {
+  body { background:#fff; padding:0; }
+  .btn-bar { display:none; }
+  .page { box-shadow:none; width:100%; padding:8mm 10mm 14mm; }
+}
+</style>
+</head>
+<body class="vide">
+
+<div class="btn-bar">
+  <button class="btn btn-print" onclick="window.print()">🖨️ Imprimer / Enregistrer PDF</button>
+  <button class="btn btn-close" onclick="window.close()">✕ Fermer</button>
+</div>
+
+<div id="contrat-container"></div>
+
+<script>
+// ── Réception données via postMessage ───────────────────────
+let _d = {};
+
+window.addEventListener('message', function(e) {
+  if (e.data && e.data.bhsh_contrat) {
+    _d = e.data.bhsh_contrat;
+    // Regénérer le contrat avec les données reçues
+    try {
+      document.getElementById('contrat-container').innerHTML = buildContrat();
+    } catch(err) {
+      console.error('Build error:', err);
+    }
+  }
+});
+
+function getP(key) { return _d[key] || ''; }
+
+// Signaler à la page parente qu'on est prêt
+window.addEventListener('DOMContentLoaded', () => {
+  if (window.opener) {
+    try { window.opener.postMessage({ bhsh_ready: true }, '*'); } catch(e) {}
+  }
+});
+
+// ── Helpers HTML ────────────────────────────────────────────
+function infoLine(label, val) {
+  return `<span class="info-lbl">${label}</span><div class="info-line">${val||''}</div>`;
+}
+function fieldRow(label, val) {
+  if (!val) return '';
+  return `<div class="field-row"><span class="field-lbl">${label} :</span><span class="field-val">${val}</span></div>`;
+}
+function cb(checked) { return `<input type="checkbox" ${checked?'checked':''} disabled>`; }
+function cbInline(label, checked) { return `<span class="cb-inline">${cb(checked)} ${label}</span>`; }
+function resumeRow(label, val) { return val ? `<div class="resume-row"><span>${label}</span><strong>${val}</strong></div>` : ''; }
+function artTitle(t) { return `<div class="art-title">${t}</div>`; }
+function artBody(t) { return `<div class="art-body">${t}</div>`; }
+function artSub(t) { return `<div class="art-sub">${t}</div>`; }
+function bullets(arr) { return `<ul class="art-bullet">${arr.map(b=>`<li>${b}</li>`).join('')}</ul>`; }
+
+function pageFooter(page, total, legalRef) {
+  return `<div class="page-footer">
+    <div class="footer-note">${legalRef}</div>
+    <div class="footer-brand"><strong>BHSH IMMO</strong>BailExpert – Copyright 2026 &nbsp;|&nbsp; Page ${page}/${total}</div>
+  </div>`;
+}
+
+// ── Construction du contrat ─────────────────────────────────
+function buildContrat() {
+
+// ── Données ─────────────────────────────────────────────────
+const type     = getP('type') || 'vide';
+const bNom     = getP('bNom');
+const bAdr     = getP('bAdr');
+const bTel     = getP('bTel');
+const bEmail   = getP('bEmail');
+const bSiret   = getP('bSiret');
+const lNom     = getP('lNom');
+const lAdr     = getP('lAdr');
+const lTel     = getP('lTel');
+const lEmail   = getP('lEmail');
+const lPiece   = getP('lPiece');
+const garant   = getP('garant');
+const bienAdr  = getP('bienAdr');
+const bienType = getP('bienType') || 'Appartement';
+const bienSurf = getP('bienSurf');
+const bienPieces = getP('bienPieces');
+const bienEtage  = getP('bienEtage');
+const bienDPE    = getP('bienDPE');
+const bienZone   = getP('bienZone');
+const bienParking = getP('bienParking');
+const bienDesc   = getP('bienDesc');
+const loyer      = getP('loyer');
+const charges    = getP('charges') || '0';
+const depot      = getP('depot');
+const echeance   = getP('echeance') || '1';
+const paiement   = getP('paiement') || 'Virement bancaire';
+const revType    = getP('revType') || 'IRL';
+const trimRef    = getP('trimRef');
+const dateDebut  = getP('dateDebut');
+const dateFin    = getP('dateFin');
+const clausesSpec = getP('clausesSpec');
+const lieuSign   = getP('lieuSign');
+const dateSign   = getP('dateSign');
+const ref        = getP('ref');
+// Saisonnier
+const loyerNuit  = getP('loyerNuit');
+const nbNuits    = getP('nbNuits');
+const taxeSejour = getP('taxeSejour');
+const fraisMenage= getP('fraisMenage');
+const acompte    = getP('acompte');
+const caution    = getP('caution');
+const dateArr    = getP('dateArr');
+const dateDep    = getP('dateDep');
+const heureArr   = getP('heureArr') || '16:00';
+const heureDep   = getP('heureDep') || '10:00';
+const nbPersonnes= getP('nbPersonnes');
+const animaux    = getP('animaux') || 'non';
+// Professionnel
+const loyerHT    = getP('loyerHT');
+const chargesPro = getP('chargesPro');
+const depotPro   = getP('depotPro');
+const siretL     = getP('siretL');
+const formeL     = getP('formeL');
+const reprL      = getP('reprL');
+const activiteL  = getP('activiteL');
+const naturePro  = getP('naturePro');
+const destPro    = getP('destPro');
+const trimRefPro = getP('trimRefPro');
+// Mobilier
+const mobilier   = getP('mobilier');
+
+document.body.className = type;
+
+const typeLabels = { vide:'Location Vide', meuble:'Location Meublée', saisonnier:'Location Saisonnière', professionnel:'Location Professionnelle' };
+const legalRefs  = {
+  vide:'Loi n°89-462 du 6 juillet 1989 – Loi ALUR n°2014-366 – Loi ELAN n°2018-1021',
+  meuble:'Loi n°89-462 art. 25-3 à 25-11 – Loi ALUR n°2014-366 – Décret n°2015-981',
+  saisonnier:'Art. L.324-1 Code du Tourisme – Art. 1709 CC – Non soumis à la loi 89-462',
+  professionnel:'Art. 57A à 57E loi n°86-1290 – Non soumis à la loi n°89-462'
+};
+const legalRef = legalRefs[type];
+
+const typeSubtitles = {
+  vide:'Soumis au Titre 1er de la loi n°89-462 du 6 juillet 1989 – Loi ALUR n°2014-366 du 24 mars 2014',
+  meuble:'Loi n°89-462 art. 25-3 à 25-11 – Loi ALUR n°2014-366 – Décret n°2015-981 du 31 juillet 2015',
+  saisonnier:'Art. L.324-1 à L.324-2 Code du Tourisme – Art. 1709 et s. Code Civil – Non soumis à la loi 89-462',
+  professionnel:'Art. 57A à 57E loi n°86-1290 du 23 décembre 1986 – Non soumis à la loi n°89-462'
+};
+
+// ── CALCULS ─────────────────────────────────────────────────
+let totalSejour = 0, loyerCC = '';
+if (type === 'saisonnier' && loyerNuit && nbNuits) {
+  totalSejour = parseFloat(loyerNuit)*parseFloat(nbNuits) + parseFloat(taxeSejour||0) + parseFloat(fraisMenage||0);
+} else if (type === 'professionnel' && loyerHT) {
+  loyerCC = loyerHT + ' € HT (' + (parseFloat(loyerHT)*1.20).toFixed(2) + ' € TTC)';
+} else if (loyer) {
+  loyerCC = loyer + ' € HC + ' + charges + ' € charges';
+}
+
+const dureeMap = { vide:'3 ans (renouvelable – loi 89-462)', meuble:'1 an renouvelable (ou 9 mois étudiant – art. 25-7)', saisonnier:'Durée du séjour – max 90 jours (non renouvelable)', professionnel:'6 ans minimum (art. 57A loi 86-1290)' };
+const preavisMap = { vide:'Locataire : 3 mois (1 mois zone tendue) | Bailleur : 6 mois', meuble:'Locataire : 1 mois | Bailleur : 3 mois avant échéance', saisonnier:'Sans préavis – fin de séjour contractuelle', professionnel:'Locataire : 6 mois à tout moment | Bailleur : 6 mois avant échéance' };
+
+// ── GÉNÉRATION PAGES ────────────────────────────────────────
+let pages = [];
+
+// ════════════════════════════════════════════════
+// PAGE 1 — PAGE DE GARDE
+// ════════════════════════════════════════════════
+let p1 = `
+<div class="page">
+  <div class="header-top">
+    <div class="header-band">
+      <h1>Contrat de Location ${type === 'saisonnier' ? '<span style="background:#fff;color:var(--col);font-size:7pt;padding:1px 6px;border-radius:10px;margin-left:4px">SAISONNIER</span>' : type === 'professionnel' ? '<span style="background:#fff;color:var(--col);font-size:7pt;padding:1px 6px;border-radius:10px;margin-left:4px">PROFESSIONNEL</span>' : type === 'meuble' ? '<span style="background:#fff;color:var(--col);font-size:7pt;padding:1px 6px;border-radius:10px;margin-left:4px">MEUBLÉ</span>' : ''}</h1>
+      <p>${typeSubtitles[type]}</p>
+    </div>
+    <div class="header-badges">
+      <div class="cb-group">
+        <div class="cb-row">${cb(type!=='saisonnier')} LOCATION &nbsp;/&nbsp; ${cb(false)} COLOCATION</div>
+        <div class="cb-row">${cb(true)} CONTRAT INITIAL</div>
+        <div class="cb-row">${cb(false)} RENOUVELLEMENT</div>
+      </div>
+      ${ref ? `<div style="margin-top:4px;font-size:7pt;text-align:right;color:var(--col);font-weight:bold">Réf. ${ref}</div>` : ''}
+    </div>
+  </div>
+
+  <div class="sec-title">I – Désignation des parties</div>
+  <div class="parties-grid">
+    <div class="partie-block">
+      <div class="partie-label">Bailleur${type==='professionnel'?' / Propriétaire':''}</div>
+      ${infoLine('Nom / Raison sociale', bNom)}
+      ${infoLine('Adresse', bAdr)}
+      ${infoLine('Téléphone', bTel)}
+      ${infoLine('Email', bEmail)}
+      ${type==='professionnel' && bSiret ? infoLine('SIRET', bSiret) : ''}
+    </div>
+    <div class="partie-block">
+      <div class="partie-label">${type==='professionnel'?'Preneur (Locataire)':'Locataire(s)'}</div>
+      ${infoLine('Nom – Prénom', lNom)}
+      ${infoLine('Adresse actuelle', lAdr)}
+      ${infoLine('Téléphone', lTel)}
+      ${infoLine('Email', lEmail)}
+      ${lPiece ? infoLine("N° pièce d'identité", lPiece) : ''}
+    </div>
+  </div>
+  ${garant ? `<div class="field-row"><span class="field-lbl">Garant(s) :</span><span class="field-val">${garant}</span></div>` : ''}
+
+  <div class="sec-title">II – ${type==='saisonnier'?'Détails du séjour':'Bien loué'}</div>
+
+  ${type==='saisonnier' ? `
+  <div style="background:var(--colBg);border:2px solid var(--col);border-radius:4px;padding:8px 10px;margin-bottom:6px">
+    <div class="grid3" style="gap:8px">
+      <div><span class="info-lbl">Arrivée</span><div style="font-size:10pt;font-weight:bold;color:var(--col)">${dateArr||'—'}</div></div>
+      <div><span class="info-lbl">Départ</span><div style="font-size:10pt;font-weight:bold;color:var(--col)">${dateDep||'—'}</div></div>
+      <div><span class="info-lbl">Durée</span><div style="font-size:10pt;font-weight:bold;color:var(--col)">${nbNuits?nbNuits+' nuits':'—'}</div></div>
+      <div><span class="info-lbl">Heure arrivée</span><div style="font-weight:bold">${heureArr}</div></div>
+      <div><span class="info-lbl">Heure départ</span><div style="font-weight:bold">${heureDep}</div></div>
+      <div><span class="info-lbl">Personnes</span><div style="font-weight:bold">${nbPersonnes||'—'}</div></div>
+    </div>
+    <div style="margin-top:4px;font-size:7.5pt">${cbInline('Animaux autorisés', animaux==='oui')} ${cbInline('Non autorisés', animaux!=='oui')}</div>
+  </div>` : ''}
+
+  <div class="sub-title">A – Désignation du logement${type==='professionnel'?' professionnel':''}</div>
+  ${fieldRow('Adresse', bienAdr)}
+  <div class="grid3" style="margin-top:4px">
+    <div><span class="info-lbl">Type</span><div class="info-line">${bienType}</div></div>
+    <div><span class="info-lbl">Surface</span><div class="info-line">${bienSurf?bienSurf+' m²':''}</div></div>
+    <div><span class="info-lbl">Pièces principales</span><div class="info-line">${bienPieces||''}</div></div>
+  </div>
+  <div class="field-row" style="margin-top:3px">
+    <span class="field-lbl">Étage :</span><span class="field-val" style="max-width:80px">${bienEtage||''}</span>
+    ${type!=='professionnel'?`<span class="field-lbl">DPE :</span><span class="field-val" style="max-width:40px">${bienDPE||''}</span>`:''}
+    <span class="field-lbl">Zone :</span><span class="field-val">${bienZone||''}</span>
+  </div>
+  <div class="field-row">
+    <span class="field-lbl">Parking :</span><span class="field-val">${bienParking||'Non'}</span>
+  </div>
+  ${bienDesc ? `<div class="field-row"><span class="field-lbl">Équipements :</span><span class="field-val">${bienDesc}</span></div>` : ''}
+
+  ${type==='professionnel' ? `
+  <div class="sub-title">B – Destination des locaux</div>
+  ${fieldRow('Nature des locaux', naturePro)}
+  ${fieldRow('Destination contractuelle', destPro)}
+  ${fieldRow('SIRET preneur', siretL)}
+  ${fieldRow('Forme juridique', formeL)}
+  ${fieldRow('Représentant légal', reprL)}
+  ${fieldRow('Activité', activiteL)}` : ''}
+
+  <div class="sec-title">III – Conditions financières</div>
+
+  ${type==='saisonnier' ? `
+  <div class="grid2">
+    <div class="resume-box">
+      ${resumeRow('Prix / nuit', loyerNuit?loyerNuit+' €':'')}
+      ${resumeRow('Nombre de nuits', nbNuits||'')}
+      ${resumeRow('Sous-total loyer', loyerNuit&&nbNuits?(parseFloat(loyerNuit)*parseFloat(nbNuits)).toFixed(2)+' €':'')}
+      ${resumeRow('Taxe de séjour', taxeSejour?taxeSejour+' €':'')}
+      ${resumeRow('Frais de ménage', fraisMenage?fraisMenage+' €':'')}
+      ${totalSejour?`<div class="resume-row" style="background:var(--colL)"><span>TOTAL DÛ</span><strong>${totalSejour.toFixed(2)} €</strong></div>`:''}
+    </div>
+    <div class="resume-box">
+      ${resumeRow('Acompte versé (30%)', acompte?acompte+' €':'')}
+      ${resumeRow('Solde restant', acompte&&totalSejour?(totalSejour-parseFloat(acompte)).toFixed(2)+' €':'')}
+      ${resumeRow('Caution dommages', caution?caution+' € (restitution 7j)':'')}
+      ${resumeRow('Mode de paiement', paiement)}
+    </div>
+  </div>` : type==='professionnel' ? `
+  <div class="grid2">
+    <div class="resume-box">
+      ${resumeRow('Loyer mensuel HT', loyerHT?loyerHT+' € HT':'')}
+      ${resumeRow('TVA (20%)', loyerHT?(parseFloat(loyerHT)*0.20).toFixed(2)+' €':'')}
+      ${resumeRow('Loyer mensuel TTC', loyerHT?(parseFloat(loyerHT)*1.20).toFixed(2)+' € TTC':'')}
+      ${resumeRow('Loyer annuel HT', loyerHT?(parseFloat(loyerHT)*12).toFixed(2)+' € HT':'')}
+    </div>
+    <div class="resume-box">
+      ${resumeRow('Charges HT', chargesPro?chargesPro+' € HT/mois':'')}
+      ${resumeRow('Dépôt de garantie', depotPro?depotPro+' € (libre)':'')}
+      ${resumeRow('Échéance', echeance+'er du mois')}
+      ${resumeRow('Paiement', paiement)}
+      ${resumeRow('Révision', 'ILAT – '+trimRefPro)}
+    </div>
+  </div>` : `
+  <div class="grid2">
+    <div class="resume-box">
+      ${resumeRow('Loyer mensuel HC', loyer?loyer+' €':'')}
+      ${resumeRow('Charges (provision)', charges+' €')}
+      ${resumeRow('Total CC', loyer?(parseFloat(loyer)+parseFloat(charges||0)).toFixed(2)+' €':'')}
+    </div>
+    <div class="resume-box">
+      ${resumeRow('Dépôt de garantie', depot?depot+' €'+(type==='meuble'?' (max 2 mois)':' (max 1 mois)'):'')}
+      ${resumeRow('Échéance', echeance+'er du mois')}
+      ${resumeRow('Paiement', paiement)}
+      ${resumeRow('Révision', revType==='IRL'?'IRL – '+trimRef:'Loyer fixe')}
+    </div>
+  </div>`}
+
+  <div class="sec-title">IV – Durée du bail</div>
+  ${type==='saisonnier' ? `
+  <div class="grid2">
+    <div>${fieldRow("Date d'arrivée", dateArr)}</div>
+    <div>${fieldRow('Date de départ', dateDep)}</div>
+  </div>` : `
+  <div class="grid2">
+    <div>${fieldRow('Date de début', dateDebut)}</div>
+    <div>${fieldRow('Date de fin', dateFin||'—')}</div>
+  </div>`}
+  ${fieldRow('Durée légale', dureeMap[type])}
+  ${fieldRow('Préavis', preavisMap[type])}
+  ${type==='saisonnier' ? `<div class="info-box">⚠️ Location saisonnière non soumise à la loi 89-462 – Pas de droit au maintien ni à la reconduction tacite.</div>` : ''}
+  ${type==='professionnel' ? `<div class="info-box">⚠️ Le preneur ne bénéficie d'aucun droit au renouvellement ni d'indemnité d'éviction (art. 57A loi 86-1290).</div>` : ''}
+
+  ${pageFooter(1, type==='saisonnier'||type==='meuble'?5:4, legalRef)}
+</div>`;
+pages.push(p1);
+
+// ════════════════════════════════════════════════
+// PAGE 2 — INVENTAIRE (meublé/saisonnier) ou ARTICLES (vide/pro)
+// ════════════════════════════════════════════════
+let p2 = '';
+if (type === 'meuble' || type === 'saisonnier') {
+  p2 = `<div class="page">
+  <div class="sec-title">V – Inventaire du ${type==='meuble'?'mobilier (Décret n°2015-981)':'logement de vacances'}</div>
+  <div class="inv-grid">
+    <div class="inv-cat">
+      <div class="inv-cat-title">🛏️ Literie</div>
+      <div class="inv-item">${cb(true)} Lit avec matelas et sommier</div>
+      <div class="inv-item">${cb(true)} Couette / couverture</div>
+      <div class="inv-item">${cb(true)} Oreillers (×2)</div>
+      <div class="inv-item">${cb(true)} Draps / taies d'oreiller</div>
+      <div class="inv-item">${cb(true)} Occultation fenêtres chambres</div>
+    </div>
+    <div class="inv-cat">
+      <div class="inv-cat-title">🍳 Cuisine</div>
+      <div class="inv-item">${cb(true)} Plaques de cuisson</div>
+      <div class="inv-item">${cb(true)} Four ou micro-ondes</div>
+      <div class="inv-item">${cb(true)} Réfrigérateur + freezer</div>
+      <div class="inv-item">${cb(true)} Vaisselle (assiettes, couverts, verres)</div>
+      <div class="inv-item">${cb(true)} Casseroles / poêles</div>
+    </div>
+    <div class="inv-cat">
+      <div class="inv-cat-title">🪑 Séjour / Salon</div>
+      <div class="inv-item">${cb(true)} Table + chaises</div>
+      <div class="inv-item">${cb(true)} Canapé ou fauteuils</div>
+      <div class="inv-item">${cb(true)} Étagères / rangements</div>
+      <div class="inv-item">${cb(true)} Luminaires</div>
+      <div class="inv-item">${cb(false)} Box internet / WiFi</div>
+    </div>
+    <div class="inv-cat">
+      <div class="inv-cat-title">🛁 Salle de bain</div>
+      <div class="inv-item">${cb(true)} Douche ou baignoire</div>
+      <div class="inv-item">${cb(true)} WC</div>
+      <div class="inv-item">${cb(true)} Miroir</div>
+      <div class="inv-item">${cb(false)} Serviettes de bain</div>
+      <div class="inv-item">${cb(true)} Poubelle</div>
+    </div>
+    <div class="inv-cat">
+      <div class="inv-cat-title">🧺 Entretien</div>
+      <div class="inv-item">${cb(true)} Aspirateur</div>
+      <div class="inv-item">${cb(true)} Balai / serpillière</div>
+      <div class="inv-item">${cb(true)} Lave-linge</div>
+      <div class="inv-item">${cb(false)} Sèche-linge</div>
+      <div class="inv-item">${cb(false)} Fer à repasser / planche</div>
+    </div>
+    <div class="inv-cat">
+      <div class="inv-cat-title">📦 Divers</div>
+      <div class="inv-item">${cb(false)} Télévision</div>
+      <div class="inv-item">${cb(false)} Bureau + chaise</div>
+      <div class="inv-item">${cb(true)} Placards / armoires</div>
+      <div class="inv-item">${cb(true)} DAAF (détecteur fumée)</div>
+      <div class="inv-item">${cb(false)} Extincteur</div>
+    </div>
+  </div>
+  ${mobilier ? `<div class="field-row" style="margin-top:6px"><span class="field-lbl">Mobilier complémentaire :</span><span class="field-val">${mobilier}</span></div>` : `<div class="full-line" style="margin-top:8px"></div><div class="full-line"></div>`}
+  <div style="margin-top:6px"><span class="info-lbl">Observations / État général</span><div class="full-line"></div><div class="full-line"></div></div>
+
+  ${artTitle('Article 1 – Solidarité des Parties')}
+  <div class="art-body">Lorsque plusieurs locataires signent le présent bail, ceux-ci sont tenus solidairement et indivisiblement au paiement du loyer, des charges et de toutes obligations découlant du présent contrat. Cette solidarité s'étend aux cautions.</div>
+  ${artTitle('Article 2 – Durée et Renouvellement')}
+  ${type==='meuble'?
+    `<div class="art-body">Le bail meublé est conclu pour une durée d'<strong>un (1) an</strong>, renouvelable par tacite reconduction. Pour un étudiant, la durée peut être réduite à <strong>9 mois</strong> non renouvelable (art. 25-7 loi 89-462).</div>
+    ${bullets(['Préavis locataire : 1 mois (lettre RAR ou acte de commissaire de justice)','Préavis bailleur : 3 mois avant échéance pour motif légal uniquement'])}`:
+    `<div class="art-body">Le présent contrat est conclu pour la seule durée du séjour défini. Il ne se renouvelle pas par tacite reconduction et ne confère aucun droit au maintien dans les lieux (art. L.324-1 Code du Tourisme). Durée maximale : 90 jours consécutifs.</div>`
+  }
+  ${pageFooter(2, 5, legalRef)}
+</div>`;
+  pages.push(p2);
+}
+
+// ════════════════════════════════════════════════
+// PAGE ARTICLES (3 pour meublé/saisonnier, 2 pour vide/pro)
+// ════════════════════════════════════════════════
+const pageNumArt1 = (type==='meuble'||type==='saisonnier') ? 3 : 2;
+const totalPages  = (type==='meuble'||type==='saisonnier') ? 5 : 4;
+
+let pArt1 = `<div class="page">
+  <div class="sec-title">Articles du contrat</div>
+
+  ${(type==='vide'||type==='professionnel') ? artTitle('Article 1 – Solidarité des Parties') + `<div class="art-body">Lorsque plusieurs locataires signent le présent bail, ceux-ci sont tenus solidairement et indivisiblement au paiement du loyer, des charges et de toutes obligations découlant du présent contrat. Cette solidarité s'étend aux cautions.</div>` + artTitle('Article 2 – Durée et Renouvellement') : ''}
+
+  ${type==='vide' ? `<div class="art-body">Le bail se renouvelle par tacite reconduction aux mêmes conditions, sauf congé délivré dans les délais légaux. Préavis locataire : 3 mois (réduit à 1 mois en zone tendue, perte d'emploi, mutation ou raisons de santé). Préavis bailleur : 6 mois avant échéance pour motif légal.</div>` : ''}
+  ${type==='professionnel' ? `<div class="art-body">Le bail professionnel est conclu pour une durée minimale de <strong>six (6) ans</strong> (art. 57A loi 86-1290). À l'échéance, reconduction tacite pour des périodes successives de même durée. Le preneur ne bénéficie d'<strong>aucun droit au renouvellement</strong> ni d'indemnité d'éviction.</div>
+    ${bullets(['Préavis locataire : 6 mois à tout moment par lettre RAR ou commissaire de justice','Préavis bailleur : 6 mois avant échéance uniquement'])}` : ''}
+
+  ${artTitle('Article 3 – Loyer, Charges et Modalités de Paiement')}
+  ${type==='saisonnier' ? `
+    ${artSub('3.1 Paiement et acompte')}
+    <div class="art-body">Un acompte de 30 % du montant total est versé à la réservation. Le solde est dû 30 jours avant la date d'arrivée. Pour toute réservation effectuée moins de 30 jours avant le séjour, la totalité est due à la signature.</div>
+    ${artSub("3.2 Conditions d'annulation par le locataire")}
+    ${bullets(['Plus de 60 jours avant le séjour : remboursement intégral','Entre 30 et 60 jours : retenue de 50 % du montant total','Moins de 30 jours : retenue de 100 % – aucun remboursement'])}
+    ${artSub('3.3 Annulation par le bailleur')}
+    <div class="art-body">Remboursement intégral dans les 15 jours. Indemnisation possible plafonnée à 15 % du montant total.</div>` :
+  type==='professionnel' ? `
+    ${artSub('3.1 Loyer HT et TVA')}
+    <div class="art-body">Le loyer est exprimé hors taxes. La TVA au taux de 20 % s'applique sur option du bailleur (art. 260-2° CGI). Le preneur assujetti peut la déduire dans les conditions de droit commun.</div>
+    ${artSub('3.2 Révision ILAT')}
+    <div class="art-body">Le loyer est révisé chaque année selon la variation de l'Indice des Loyers des Activités Tertiaires (ILAT) publié par l'INSEE (art. L.112-2 CMF). En cas de variation négative, le loyer reste stable.</div>
+    ${artSub('3.3 Charges et taxes')}
+    <div class="art-body">Les charges récupérables, la taxe foncière et frais de copropriété sont refacturés au preneur avec décompte annuel et régularisation.</div>` :
+  type==='meuble' ? `
+    ${artSub('3.1 Forfait charges')}
+    <div class="art-body">Pour un bail meublé, les charges sont récupérées sous forme de <strong>forfait</strong> non sujet à régularisation. Le montant est fixé en tenant compte des charges réelles de l'année précédente.</div>
+    ${artSub('3.2 Quittance')}
+    <div class="art-body">La délivrance d'une quittance est gratuite et obligatoire sur demande du locataire.</div>
+    ${artSub('3.3 Révision annuelle')}
+    <div class="art-body">Le loyer est révisé une fois par an selon la variation de l'IRL publié par l'INSEE. La révision ne peut dépasser la variation de l'IRL.</div>` : `
+    ${artSub('3.1 Régularisation des charges')}
+    <div class="art-body">En cas de provisions sur charges, le bailleur produit annuellement le décompte détaillé des charges réelles et restitue le trop-perçu ou appelle le solde dû.</div>
+    ${artSub('3.2 Quittance')}
+    <div class="art-body">La délivrance d'une quittance est gratuite et obligatoire sur demande du locataire.</div>
+    ${artSub('3.3 Révision annuelle')}
+    <div class="art-body">Le loyer est révisé une fois par an selon la variation de l'IRL publié par l'INSEE. La révision ne peut dépasser la variation de l'IRL.</div>`}
+
+  ${artTitle('Article 4 – Dépôt de Garantie / Caution')}
+  ${type==='vide' ? `<div class="art-body">Le dépôt de garantie est limité à <strong>un (1) mois</strong> de loyer HC (art. 22 loi 89-462). Il est restitué dans un délai de 1 mois si l'état des lieux de sortie est conforme, ou de 2 mois dans le cas contraire. Au-delà, il porte intérêt au taux légal majoré de 10 % par mois de retard entamé.</div>` : ''}
+  ${type==='meuble' ? `<div class="art-body">Le dépôt de garantie est limité à <strong>deux (2) mois</strong> de loyer HC (art. 25-6 loi 89-462). Restitution dans un délai de 1 mois si l'état des lieux est conforme, ou 2 mois dans le cas contraire.</div>` : ''}
+  ${type==='saisonnier' ? `<div class="art-body">La caution couvre les éventuelles dégradations constatées à l'état des lieux de sortie. Elle est restituée dans un délai de <strong>7 jours</strong> après le départ si aucun dommage n'est constaté. En cas de dégradation, le bailleur dispose de 30 jours pour présenter les justificatifs.</div>` : ''}
+  ${type==='professionnel' ? `<div class="art-body">Le dépôt de garantie est librement fixé entre les parties (aucune limite légale). Il est restitué dans un délai de <strong>2 mois</strong> après restitution des locaux en bon état. Il ne produit pas d'intérêts au profit du preneur.</div>` : ''}
+
+  ${pageFooter(pageNumArt1, totalPages, legalRef)}
+</div>`;
+pages.push(pArt1);
+
+// ════════════════════════════════════════════════
+// PAGE ARTICLES SUITE
+// ════════════════════════════════════════════════
+let pArt2 = `<div class="page">
+  ${artTitle('Article 5 – Travaux, Entretien et Réparations')}
+  ${type==='saisonnier' ? `
+    ${artSub('5.1 Obligations du locataire')}
+    ${bullets(['Occuper les lieux en bon père de famille, à usage exclusif de vacances.','Laisser le logement propre à la remise des clés (vaisselle faite, poubelles vidées, lits défaits).','Signaler immédiatement tout sinistre ou dégradation au bailleur.','Ne pas organiser de fêtes ou rassemblements sans autorisation écrite préalable.'])}
+    ${artSub('5.2 Obligations du bailleur')}
+    ${bullets(['Mettre à disposition le logement propre, conforme à la description et en bon état de fonctionnement.','Fournir les équipements mentionnés dans l\'inventaire en état de marche.'])}` :
+  type==='professionnel' ? `
+    ${artSub('5.1 Entretien courant (preneur)')}
+    ${bullets(['Entretien courant des locaux et des équipements mis à disposition.','Maintenance des installations de chauffage, climatisation et ventilation.','Nettoyage des parties privatives (vitres, sols, faux plafonds).'])}
+    ${artSub('5.2 Grosses réparations (bailleur – art. 606 CC)')}
+    ${bullets(['Réparations de gros œuvre, toiture et structure du bâtiment.','Mise aux normes imposées concernant la structure.'])}
+    ${artSub('5.3 Travaux d\'aménagement')}
+    <div class="art-body">Tout travaux nécessite l'accord écrit préalable du bailleur. En fin de bail : remise en état aux frais du preneur ou conservation sans indemnité au choix du bailleur.</div>` : `
+    ${artSub('5.1 Obligations du locataire')}
+    ${bullets(['Entretien courant du logement et de ses équipements.','Menues réparations locatives (joints, ampoules, serrures).'+( type==='meuble'?' Signalement immédiat de tout dysfonctionnement important.':''),'Entretien annuel de la chaudière individuelle et ramonage des conduits.'])}
+    ${artSub('5.2 Obligations du bailleur')}
+    ${bullets(['Travaux de mise en conformité et réparations importantes.','Remplacement des équipements vétustes hors usure normale.','Maintien du logement en état de décence.'])}
+    ${artSub("5.3 Travaux d'amélioration")}
+    <div class="art-body">Le locataire ne peut effectuer aucune transformation sans accord écrit préalable du bailleur. Les travaux non autorisés pourront être remis en état aux frais du locataire ou conservés sans indemnité.</div>`}
+
+  ${artTitle('Article 6 – Assurances')}
+  ${type==='saisonnier' ? `<div class="art-body">Le bailleur atteste que le bien est couvert par une assurance <strong>propriétaire non-occupant (PNO)</strong> incluant la responsabilité civile villégiature. Le locataire doit disposer d'une assurance responsabilité civile villégiature, généralement incluse dans son contrat multirisques habitation principal.</div>` :
+  type==='professionnel' ? `
+    ${artSub('6.1 Assurance bailleur (PNO)')}
+    <div class="art-body">Le bailleur maintient une assurance couvrant l'immeuble (incendie, dégâts des eaux, catastrophes naturelles) pour toute la durée du bail.</div>
+    ${artSub('6.2 Assurance preneur (multirisques professionnelle)')}
+    <div class="art-body">Le preneur souscrit et maintient une assurance multirisques professionnelle couvrant les risques locatifs, sa responsabilité civile professionnelle et son matériel. Attestation remise au bailleur à la signature et à chaque renouvellement annuel.</div>` :
+  `<div class="art-body">Le locataire est tenu de souscrire et maintenir en vigueur une assurance multirisques habitation (MRH) garantissant les risques locatifs pour toute la durée du bail. À défaut, le bailleur peut résilier le bail ou souscrire une assurance pour compte du locataire dont la prime sera remboursée.</div>`}
+
+  ${artTitle('Article 7 – Clause Résolutoire')}
+  <div class="legal-note">Base légale : ${type==='professionnel'?'Art. 57A – Loi n°86-1290':type==='saisonnier'?'Art. 1709 CC – Contrat saisonnier':'Art. 24 – Loi n°89-462 mod. ALUR – Loi ELAN n°2018-1021'}</div>
+  ${type==='professionnel' ? `<div class="art-body">À défaut de paiement du loyer ou des charges, et <strong>1 mois</strong> après un commandement de payer par commissaire de justice demeuré infructueux, le bail sera résilié de plein droit.</div>` :
+  type==='saisonnier' ? `<div class="art-body">En cas de non-paiement du solde à la date prévue, ou de violation grave des conditions du présent contrat (dépassement du nombre de personnes, nuisances, dégradations importantes), le bailleur pourra mettre fin au séjour sans remboursement.</div>` :
+  `<div class="art-body">À défaut de paiement de tout ou partie du loyer ou des charges, et <strong>deux mois</strong> après un commandement de payer par commissaire de justice demeuré infructueux, le présent contrat sera résilié de plein droit.</div>
+  ${artSub('Motifs légaux (art. 24 al. 1)')}
+  ${bullets(['Non-paiement du loyer ou des charges à leur échéance','Non-versement du dépôt de garantie','Défaut d\'assurance habitation (MRH) non justifiée','Troubles anormaux de voisinage constatés par décision judiciaire'])}`}
+
+  ${artTitle('Article 8 – État des Lieux')}
+  ${type==='saisonnier' ? `<div class="art-body">Un état des lieux contradictoire est réalisé à la remise des clés (entrée) et au départ (sortie). En l'absence d'état des lieux à l'arrivée, le locataire dispose de <strong>24h</strong> pour signaler par écrit tout défaut préexistant. Toute dégradation constatée à la sortie sera imputée sur la caution.</div>` :
+  type==='professionnel' ? `<div class="art-body">Un état des lieux contradictoire est réalisé à l'entrée et à la restitution des locaux. Il est signé par les deux parties et annexé au bail.</div>` :
+  `<div class="art-body">L'état des lieux est réalisé contradictoirement à la remise des clés et à la restitution. Il est signé par les deux parties et annexé au bail.${type==='meuble'?' Il inclut l\'inventaire détaillé du mobilier.':''} Une notice d'information est remise au locataire lors de la signature.</div>`}
+
+  ${pageFooter(pageNumArt1+1, totalPages, legalRef)}
+</div>`;
+pages.push(pArt2);
+
+// ════════════════════════════════════════════════
+// DERNIÈRE PAGE — ARTICLE 9 + SIGNATURES
+// ════════════════════════════════════════════════
+let pSign = `<div class="page">
+  ${artTitle('Article 9 – Clauses Diverses')}
+  ${type==='professionnel' ? `
+    ${artSub('9.1 Domiciliation et siège social')}
+    <div class="art-body">Le preneur est autorisé à domicilier son entreprise dans les locaux. Cette autorisation prend fin avec le bail.</div>
+    ${artSub('9.2 Enseigne et signalétique')}
+    <div class="art-body">Toute enseigne nécessite l'accord écrit du bailleur et les autorisations administratives requises. Déposée aux frais du preneur en fin de bail.</div>
+    ${artSub('9.3 Sous-location interdite')}
+    <div class="art-body">Toute sous-location ou cession du bail est strictement interdite sans accord écrit du bailleur sous peine de résiliation de plein droit.</div>
+    ${artSub('9.4 Enregistrement')}
+    <div class="art-body">Le présent bail sera enregistré auprès des services fiscaux dans le mois suivant sa signature. Les frais sont partagés par moitié entre les parties.</div>
+    ${artSub('9.5 Élection de domicile')}
+    <div class="art-body">Tout litige sera soumis au Tribunal Judiciaire du lieu des locaux après tentative de médiation amiable.</div>` :
+  type==='saisonnier' ? `
+    ${artSub('9.1 Interdictions')}
+    <div class="art-body">Interdiction de fumer à l'intérieur. Sous-location strictement interdite. Animaux : ${animaux==='oui'?'autorisés sous responsabilité du locataire, dégâts imputés sur la caution.':'non autorisés.'}</div>
+    ${artSub('9.2 Bruit et voisinage')}
+    <div class="art-body">Le locataire respecte la tranquillité du voisinage (silence de 22h à 8h). Toute soirée est soumise à autorisation écrite préalable du bailleur.</div>
+    ${artSub('9.3 Force majeure')}
+    <div class="art-body">En cas de force majeure rendant le logement inhabitable, le contrat est résilié de plein droit et toutes les sommes versées sont restituées sans indemnité.</div>
+    ${artSub('9.4 Élection de domicile')}
+    <div class="art-body">Tout litige sera soumis à la juridiction du lieu de situation du bien après tentative de résolution amiable.</div>` : `
+    ${artSub('9.1 Chiens d\'assistance')}
+    <div class="art-body">Les chiens d'assistance sont toujours autorisés par la loi, sans restriction possible.</div>
+    ${artSub('9.2 Détecteurs de fumée (DAAF)')}
+    <div class="art-body">Le bailleur atteste avoir installé au moins un DAAF. Le locataire en assure le bon fonctionnement et ne doit pas le démonter.</div>
+    ${artSub('9.3 Tri sélectif')}
+    <div class="art-body">Le locataire respecte les consignes de tri sélectif en vigueur dans la commune.</div>
+    ${artSub('9.4 Parties communes')}
+    <div class="art-body">Le locataire respecte le règlement de copropriété et ne pas encombrer les parties communes.</div>
+    ${artSub('9.5 Élection de domicile')}
+    <div class="art-body">Tout différend relatif au présent bail sera soumis à la juridiction compétente du lieu de situation du bien.</div>`}
+  ${clausesSpec ? `${artSub('Clauses particulières')}<div class="art-body">${clausesSpec}</div>` : ''}
+
+  <div class="sec-title" style="margin-top:10px">Signatures des parties</div>
+  <p style="font-size:7.5pt;margin-bottom:8px">Fait en deux exemplaires originaux${lieuSign?' à <strong>'+lieuSign+'</strong>':''}, le ${dateSign||'_______________'}.</p>
+
+  <div class="sig-grid">
+    <div class="sig-box">
+      <div class="sig-lbl">${type==='professionnel'?'Le Bailleur':'Le Bailleur'}</div>
+      <div class="sig-name">${bNom}</div>
+      <div class="sig-line"></div>
+      <div style="font-size:6.5pt;color:#666;margin-top:3px">Signature précédée de « Lu et approuvé »${type==='professionnel'?' + Cachet':''}</div>
+    </div>
+    <div class="sig-box">
+      <div class="sig-lbl">${type==='professionnel'?'Le Preneur':'Le Locataire'}</div>
+      <div class="sig-name">${lNom}</div>
+      <div class="sig-line"></div>
+      <div style="font-size:6.5pt;color:#666;margin-top:3px">Signature précédée de « Lu et approuvé »${type==='professionnel'?' + Cachet':''}</div>
+    </div>
+  </div>
+  <p style="font-size:7pt;margin-top:8px;color:#555">Paraphes sur chaque page : ___________________________</p>
+
+  <div style="margin-top:8px;padding:4px 7px;background:var(--colBg);border-left:3px solid var(--col);font-size:6.8pt;color:#555">
+    <strong>Documents annexés :</strong> État des lieux d'entrée
+    ${type==='meuble'||type==='saisonnier'?' • Inventaire du mobilier':''}
+    ${type==='professionnel'?' • Plan des locaux • Diagnostics techniques (DPE, amiante, électricité…)':' • Diagnostics techniques (DPE)'}
+    • Notice d'information droits et obligations des parties
+    ${type==='professionnel'?' • Attestation d\'assurance preneur':' • Attestation d\'assurance locataire (MRH)'}
+  </div>
+
+  ${pageFooter(totalPages, totalPages, legalRef)}
+</div>`;
+pages.push(pSign);
+
+document.title = `Contrat ${typeLabels[type]} – ${bNom||'BHSH IMMO'}`;
+document.body.className = type;
+return pages.join('');
+} // end buildContrat
+
+// Rendre si données déjà disponibles au chargement
+document.addEventListener('DOMContentLoaded', () => {
+  if (_d.type) {
+    document.getElementById('contrat-container').innerHTML = buildContrat();
+  }
+});
+</script>
+</body>
+</html>
