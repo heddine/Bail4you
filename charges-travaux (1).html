@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Charges & Travaux — BailExpert</title>
+<style>
+  :root { --bg:#f0f4f8; --card:#ffffff; --text:#0D1B2A; --muted:#607D8B; --border:#e0e6ed; --orange:#ff6600; }
+  * { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+  body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; background:var(--bg); color:var(--text); padding-bottom:90px; }
+
+  .header { background:linear-gradient(135deg,#33691e,#558b2f); padding:18px 16px; color:#fff; position:sticky; top:0; z-index:50; box-shadow:0 4px 16px rgba(51,105,30,0.25); }
+  .header-top { display:flex; align-items:center; gap:12px; }
+  .header-icon { font-size:28px; }
+  .header-title { font-size:17px; font-weight:900; }
+  .header-sub { font-size:11px; opacity:0.85; margin-top:2px; }
+  .back-btn { background:rgba(255,255,255,0.2); border:none; color:#fff; width:36px; height:36px; border-radius:10px; font-size:18px; cursor:pointer; }
+
+  .content { padding:16px; max-width:560px; margin:0 auto; }
+
+  .summary-card { background:linear-gradient(135deg,#1b5e20,#2e7d32); border-radius:16px; padding:18px; color:#fff; margin-bottom:16px; box-shadow:0 6px 20px rgba(27,94,32,0.3); }
+  .summary-row { display:flex; justify-content:space-between; align-items:center; padding:6px 0; font-size:13px; }
+  .summary-row.total { border-top:1px solid rgba(255,255,255,0.25); margin-top:8px; padding-top:12px; font-size:16px; font-weight:900; }
+  .summary-label { opacity:0.85; }
+  .summary-val { font-weight:800; }
+
+  .add-btn { width:100%; padding:15px; border-radius:14px; border:none; background:linear-gradient(135deg,#ff6600,#cc4400); color:#fff; font-size:14px; font-weight:800; cursor:pointer; box-shadow:0 4px 16px rgba(255,102,0,0.35); margin-bottom:18px; display:flex; align-items:center; justify-content:center; gap:8px; }
+
+  .filter-bar { display:flex; gap:8px; overflow-x:auto; margin-bottom:16px; padding-bottom:4px; }
+  .filter-chip { flex-shrink:0; padding:8px 14px; border-radius:20px; border:1.5px solid var(--border); background:var(--card); font-size:12px; font-weight:700; color:var(--muted); cursor:pointer; white-space:nowrap; }
+  .filter-chip.active { background:#33691e; border-color:#33691e; color:#fff; }
+
+  .entry-card { background:var(--card); border-radius:14px; padding:14px; margin-bottom:10px; border:1px solid var(--border); display:flex; align-items:center; gap:12px; }
+  .entry-icon { width:42px; height:42px; border-radius:11px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+  .entry-info { flex:1; min-width:0; }
+  .entry-title { font-size:13.5px; font-weight:700; color:var(--text); }
+  .entry-meta { font-size:11px; color:var(--muted); margin-top:2px; }
+  .entry-tag { display:inline-block; font-size:9px; font-weight:800; padding:2px 7px; border-radius:6px; margin-top:4px; }
+  .entry-amount { font-size:15px; font-weight:900; color:#33691e; white-space:nowrap; }
+  .entry-actions { display:flex; flex-direction:column; gap:4px; }
+  .entry-del { background:none; border:none; color:#ccc; font-size:16px; cursor:pointer; padding:4px; }
+  .entry-del:active { color:#ef5350; }
+
+  .empty-state { text-align:center; padding:50px 20px; color:var(--muted); }
+  .empty-state .icon { font-size:48px; margin-bottom:12px; opacity:0.4; }
+
+  /* Modal */
+  .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:200; align-items:flex-end; justify-content:center; }
+  .modal-overlay.open { display:flex; }
+  .modal-sheet { background:#fff; border-radius:20px 20px 0 0; width:100%; max-width:560px; max-height:90vh; overflow-y:auto; padding:20px; }
+  .modal-handle { width:40px; height:4px; background:#ddd; border-radius:2px; margin:0 auto 16px; }
+  .modal-title { font-size:16px; font-weight:900; margin-bottom:16px; }
+
+  label { font-size:11px; font-weight:700; color:var(--muted); display:block; margin-bottom:5px; margin-top:12px; text-transform:uppercase; letter-spacing:0.3px; }
+  input, select, textarea { width:100%; padding:12px; border-radius:10px; border:1.5px solid var(--border); font-size:14px; background:#fafbfc; color:var(--text); }
+  input:focus, select:focus, textarea:focus { outline:none; border-color:#33691e; }
+  textarea { resize:vertical; min-height:60px; }
+
+  .cat-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:6px; }
+  .cat-option { padding:12px 8px; border-radius:12px; border:1.5px solid var(--border); background:#fafbfc; cursor:pointer; text-align:center; font-size:11px; font-weight:700; }
+  .cat-option.selected { border-color:#33691e; background:#e8f5e9; color:#1b5e20; }
+  .cat-option .cat-icon { font-size:20px; display:block; margin-bottom:4px; }
+  .cat-case { font-size:9px; color:var(--muted); display:block; margin-top:2px; }
+
+  .photo-zone { border:2px dashed var(--border); border-radius:12px; padding:16px; text-align:center; margin-top:12px; cursor:pointer; }
+  .photo-preview { width:100%; max-height:160px; object-fit:cover; border-radius:10px; margin-top:8px; }
+
+  .modal-btns { display:flex; gap:10px; margin-top:20px; }
+  .btn-cancel { flex:1; padding:14px; border-radius:12px; border:1.5px solid var(--border); background:#fff; color:var(--muted); font-weight:700; cursor:pointer; }
+  .btn-save { flex:2; padding:14px; border-radius:12px; border:none; background:linear-gradient(135deg,#33691e,#558b2f); color:#fff; font-weight:800; cursor:pointer; }
+
+  .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px); background:#1565C0; color:#fff; padding:11px 22px; border-radius:20px; font-size:13px; font-weight:700; opacity:0; transition:all 0.25s; pointer-events:none; z-index:999; }
+  .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+  .toast.success { background:#1b5e20; }
+  .toast.error { background:#b71c1c; }
+
+  .export-bar { position:fixed; bottom:0; left:0; right:0; background:#fff; border-top:2px solid #33691e; padding:12px 16px; display:flex; gap:10px; z-index:60; }
+  .export-btn { flex:1; padding:13px; border-radius:12px; border:none; font-size:12.5px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; }
+  .export-btn.primary { background:linear-gradient(135deg,#1b5e20,#2e7d32); color:#fff; }
+  .export-btn.secondary { background:#fff; border:1.5px solid #33691e; color:#33691e; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <button class="back-btn" onclick="window.location.href='index.html?open=2044'">←</button>
+    <div>
+      <div class="header-title">🔧 Charges & Travaux</div>
+      <div class="header-sub">Suivi des dépenses — Année <span id="anneeActuelle"></span></div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- Récap fiscal -->
+  <div class="summary-card">
+    <div class="summary-row"><span class="summary-label">Travaux & réparations</span><span class="summary-val" id="sumTravaux">0 €</span></div>
+    <div class="summary-row"><span class="summary-label">Charges de copropriété</span><span class="summary-val" id="sumCharges">0 €</span></div>
+    <div class="summary-row"><span class="summary-label">Taxes & assurances</span><span class="summary-val" id="sumTaxes">0 €</span></div>
+    <div class="summary-row"><span class="summary-label">Frais de gestion</span><span class="summary-val" id="sumGestion">0 €</span></div>
+    <div class="summary-row"><span class="summary-label">Intérêts d'emprunt</span><span class="summary-val" id="sumEmprunt">0 €</span></div>
+    <div class="summary-row"><span class="summary-label">Déductions spécifiques</span><span class="summary-val" id="sumDeductions">0 €</span></div>
+    <div class="summary-row total"><span class="summary-label">Total déductible</span><span class="summary-val" id="sumTotal">0 €</span></div>
+  </div>
+
+  <button class="add-btn" onclick="ouvrirModalAjout()">
+    <span style="font-size:18px">➕</span> Ajouter une dépense
+  </button>
+
+  <div class="filter-bar" id="filterBar">
+    <div class="filter-chip active" data-filter="all" onclick="filtrer('all')">Toutes</div>
+    <div class="filter-chip" data-filter="travaux" onclick="filtrer('travaux')">🔨 Travaux</div>
+    <div class="filter-chip" data-filter="charges" onclick="filtrer('charges')">🏢 Charges</div>
+    <div class="filter-chip" data-filter="taxes" onclick="filtrer('taxes')">📋 Taxes</div>
+    <div class="filter-chip" data-filter="gestion" onclick="filtrer('gestion')">💼 Gestion</div>
+    <div class="filter-chip" data-filter="emprunt" onclick="filtrer('emprunt')">🏦 Emprunt</div>
+    <div class="filter-chip" data-filter="deductions" onclick="filtrer('deductions')">🏷️ Déductions</div>
+  </div>
+
+  <div id="entriesList"></div>
+
+</div>
+
+<div class="export-bar">
+  <button class="export-btn secondary" onclick="exporterCSV()">📊 Export CSV</button>
+  <button class="export-btn primary" onclick="envoyerVers2044()">📤 Envoyer vers 2044</button>
+</div>
+
+<!-- Modal Ajout/Édition -->
+<div class="modal-overlay" id="modalAjout" onclick="if(event.target===this)fermerModal()">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modalTitle">➕ Nouvelle dépense</div>
+
+    <label>Catégorie fiscale</label>
+    <div class="cat-grid" id="catGrid"></div>
+
+    <label>Sous-catégorie</label>
+    <select id="sousCategorie"></select>
+
+    <label>Montant (€)</label>
+    <input type="number" id="montant" placeholder="0.00" step="0.01" inputmode="decimal">
+
+    <label>Date</label>
+    <input type="date" id="dateDepense">
+
+    <label>Description</label>
+    <textarea id="description" placeholder="Ex: Remplacement chaudière, facture Plombier SARL..."></textarea>
+
+    <label>Bien concerné</label>
+    <select id="bienConcerne">
+      <option value="">Tous biens / Non spécifié</option>
+    </select>
+
+    <label>Photo justificatif (optionnel)</label>
+    <div class="photo-zone" onclick="document.getElementById('photoInput').click()">
+      <div id="photoZoneText">📷 Ajouter une photo de facture</div>
+      <img id="photoPreview" class="photo-preview" style="display:none">
+    </div>
+    <input type="file" id="photoInput" accept="image/*" capture="environment" style="display:none" onchange="chargerPhoto(this)">
+
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="fermerModal()">Annuler</button>
+      <button class="btn-save" onclick="sauvegarderDepense()">💾 Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════════════
+// CATÉGORIES FISCALES — mapping exact vers cases 2044
+// ══════════════════════════════════════════════════════
+const CATEGORIES = {
+  travaux: {
+    label: 'Travaux', icon: '🔨', color: '#e65100',
+    sousCategories: [
+      { id: 'reparation', label: 'Réparation, entretien et amélioration', case: '224' },
+      { id: 'eviction', label: "Indemnités d'éviction, frais de relogement", case: '226' }
+    ]
+  },
+  charges: {
+    label: 'Charges copro', icon: '🏢', color: '#1565C0',
+    sousCategories: [
+      { id: 'recuperables', label: 'Charges récupérables non récupérées', case: '225' },
+      { id: 'provisions', label: 'Provisions pour charges payées', case: '229' },
+      { id: 'regularisation', label: 'Régularisation provisions année précédente', case: '230' }
+    ]
+  },
+  taxes: {
+    label: 'Taxes & assurances', icon: '📋', color: '#6a1b9a',
+    sousCategories: [
+      { id: 'taxe_fonciere', label: 'Taxes foncières et taxes annexes', case: '227' },
+      { id: 'assurance', label: "Primes d'assurance", case: '223' }
+    ]
+  },
+  gestion: {
+    label: 'Gestion', icon: '💼', color: '#00695c',
+    sousCategories: [
+      { id: 'admin_gestion', label: "Frais d'administration et de gestion", case: '221' },
+      { id: 'autres_gestion', label: 'Autres frais de gestion (20€/local)', case: '222' }
+    ]
+  },
+  emprunt: {
+    label: 'Emprunt', icon: '🏦', color: '#283593',
+    sousCategories: [
+      { id: 'interets', label: "Intérêts d'emprunt", case: '250' }
+    ]
+  },
+  deductions: {
+    label: 'Déductions spécifiques', icon: '🏷️', color: '#bf360c',
+    sousCategories: [
+      { id: 'specifiques', label: 'Déductions spécifiques (Cosse, Anah...)', case: '228' }
+    ]
+  }
+};
+
+let entries = [];
+let currentFilter = 'all';
+let editingId = null;
+let photoData = null;
+
+// ══════════════════════════════════════════════════════
+// Stockage
+// ══════════════════════════════════════════════════════
+function chargerEntries() {
+  try { entries = JSON.parse(localStorage.getItem('bailexpert_charges_travaux') || '[]'); }
+  catch { entries = []; }
+}
+function sauvegarderEntries() {
+  localStorage.setItem('bailexpert_charges_travaux', JSON.stringify(entries));
+}
+
+function chargerBiens() {
+  try {
+    const biens = JSON.parse(localStorage.getItem('bailexpert_biens') || '[]');
+    const sel = document.getElementById('bienConcerne');
+    biens.forEach(b => {
+      const opt = document.createElement('option');
+      opt.value = b.id || b.adresse || '';
+      opt.textContent = b.adresse || b.nom || 'Bien';
+      sel.appendChild(opt);
+    });
+  } catch {}
+}
+
+// ══════════════════════════════════════════════════════
+// UI — Modal
+// ══════════════════════════════════════════════════════
+function buildCatGrid(selected) {
+  const grid = document.getElementById('catGrid');
+  grid.innerHTML = Object.entries(CATEGORIES).map(([key, cat]) => `
+    <div class="cat-option ${key === selected ? 'selected' : ''}" data-cat="${key}" onclick="selectCategorie('${key}')">
+      <span class="cat-icon">${cat.icon}</span>
+      ${cat.label}
+    </div>
+  `).join('');
+}
+
+function selectCategorie(key) {
+  document.querySelectorAll('.cat-option').forEach(el => el.classList.toggle('selected', el.dataset.cat === key));
+  buildSousCategorie(key);
+}
+
+function buildSousCategorie(catKey, selectedSous) {
+  const sel = document.getElementById('sousCategorie');
+  const cat = CATEGORIES[catKey];
+  if (!cat) { sel.innerHTML = ''; return; }
+  sel.innerHTML = cat.sousCategories.map(sc =>
+    `<option value="${sc.id}" ${sc.id === selectedSous ? 'selected' : ''}>${sc.label} (L.${sc.case})</option>`
+  ).join('');
+}
+
+function ouvrirModalAjout() {
+  editingId = null;
+  photoData = null;
+  document.getElementById('modalTitle').textContent = '➕ Nouvelle dépense';
+  document.getElementById('montant').value = '';
+  document.getElementById('dateDepense').value = new Date().toISOString().slice(0,10);
+  document.getElementById('description').value = '';
+  document.getElementById('bienConcerne').value = '';
+  document.getElementById('photoPreview').style.display = 'none';
+  document.getElementById('photoZoneText').style.display = 'block';
+  buildCatGrid('travaux');
+  buildSousCategorie('travaux');
+  document.getElementById('modalAjout').classList.add('open');
+}
+
+function ouvrirModalEdition(id) {
+  const e = entries.find(x => x.id === id);
+  if (!e) return;
+  editingId = id;
+  photoData = e.photo || null;
+  document.getElementById('modalTitle').textContent = '✏️ Modifier la dépense';
+  document.getElementById('montant').value = e.montant;
+  document.getElementById('dateDepense').value = e.date;
+  document.getElementById('description').value = e.description || '';
+  document.getElementById('bienConcerne').value = e.bien || '';
+  if (e.photo) {
+    document.getElementById('photoPreview').src = e.photo;
+    document.getElementById('photoPreview').style.display = 'block';
+    document.getElementById('photoZoneText').style.display = 'none';
+  } else {
+    document.getElementById('photoPreview').style.display = 'none';
+    document.getElementById('photoZoneText').style.display = 'block';
+  }
+  buildCatGrid(e.categorie);
+  buildSousCategorie(e.categorie, e.sousCategorie);
+  document.getElementById('modalAjout').classList.add('open');
+}
+
+function fermerModal() {
+  document.getElementById('modalAjout').classList.remove('open');
+}
+
+function chargerPhoto(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    photoData = e.target.result;
+    document.getElementById('photoPreview').src = photoData;
+    document.getElementById('photoPreview').style.display = 'block';
+    document.getElementById('photoZoneText').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+function sauvegarderDepense() {
+  const catEl = document.querySelector('.cat-option.selected');
+  const categorie = catEl ? catEl.dataset.cat : 'travaux';
+  const sousCategorie = document.getElementById('sousCategorie').value;
+  const montant = parseFloat(document.getElementById('montant').value);
+  const date = document.getElementById('dateDepense').value;
+  const description = document.getElementById('description').value.trim();
+  const bien = document.getElementById('bienConcerne').value;
+
+  if (!montant || montant <= 0) { showToast('Indiquez un montant valide', 'error'); return; }
+  if (!date) { showToast('Indiquez une date', 'error'); return; }
+
+  const entry = { id: editingId || 'dep_' + Date.now(), categorie, sousCategorie, montant, date, description, bien, photo: photoData };
+
+  if (editingId) {
+    const idx = entries.findIndex(e => e.id === editingId);
+    if (idx >= 0) entries[idx] = entry;
+  } else {
+    entries.unshift(entry);
+  }
+
+  sauvegarderEntries();
+  fermerModal();
+  renderEntries();
+  majResume();
+  showToast(editingId ? '✓ Dépense modifiée' : '✓ Dépense ajoutée', 'success');
+}
+
+function supprimerDepense(id) {
+  entries = entries.filter(e => e.id !== id);
+  sauvegarderEntries();
+  renderEntries();
+  majResume();
+  showToast('🗑 Dépense supprimée', 'success');
+}
+
+// ══════════════════════════════════════════════════════
+// Affichage liste
+// ══════════════════════════════════════════════════════
+function filtrer(cat) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.toggle('active', c.dataset.filter === cat));
+  renderEntries();
+}
+
+function renderEntries() {
+  const list = document.getElementById('entriesList');
+  const filtered = currentFilter === 'all' ? entries : entries.filter(e => e.categorie === currentFilter);
+
+  if (!filtered.length) {
+    list.innerHTML = `<div class="empty-state"><div class="icon">📭</div>Aucune dépense enregistrée${currentFilter !== 'all' ? ' dans cette catégorie' : ''}</div>`;
+    return;
+  }
+
+  list.innerHTML = filtered
+    .sort((a,b) => new Date(b.date) - new Date(a.date))
+    .map(e => {
+      const cat = CATEGORIES[e.categorie] || CATEGORIES.travaux;
+      const sousCat = cat.sousCategories.find(sc => sc.id === e.sousCategorie);
+      const dateStr = new Date(e.date).toLocaleDateString('fr-FR');
+      return `
+        <div class="entry-card">
+          <div class="entry-icon" style="background:${cat.color}22;color:${cat.color}">${cat.icon}</div>
+          <div class="entry-info" onclick="ouvrirModalEdition('${e.id}')">
+            <div class="entry-title">${sousCat ? sousCat.label : cat.label}</div>
+            <div class="entry-meta">${dateStr}${e.description ? ' — ' + e.description.substring(0,40) : ''}${e.bien ? ' · ' + e.bien : ''}</div>
+            <span class="entry-tag" style="background:${cat.color}22;color:${cat.color}">L.${sousCat ? sousCat.case : '—'}</span>
+          </div>
+          <div class="entry-amount">${e.montant.toFixed(2)} €</div>
+          <button class="entry-del" onclick="supprimerDepense('${e.id}')">🗑</button>
+        </div>
+      `;
+    }).join('');
+}
+
+// ══════════════════════════════════════════════════════
+// Résumé fiscal
+// ══════════════════════════════════════════════════════
+function majResume() {
+  const sums = { travaux:0, charges:0, taxes:0, gestion:0, emprunt:0, deductions:0 };
+  entries.forEach(e => { if (sums[e.categorie] !== undefined) sums[e.categorie] += e.montant; });
+
+  document.getElementById('sumTravaux').textContent = sums.travaux.toFixed(2) + ' €';
+  document.getElementById('sumCharges').textContent = sums.charges.toFixed(2) + ' €';
+  document.getElementById('sumTaxes').textContent = sums.taxes.toFixed(2) + ' €';
+  document.getElementById('sumGestion').textContent = sums.gestion.toFixed(2) + ' €';
+  document.getElementById('sumEmprunt').textContent = sums.emprunt.toFixed(2) + ' €';
+  document.getElementById('sumDeductions').textContent = sums.deductions.toFixed(2) + ' €';
+  const total = Object.values(sums).reduce((a,b) => a+b, 0);
+  document.getElementById('sumTotal').textContent = total.toFixed(2) + ' €';
+}
+
+// ══════════════════════════════════════════════════════
+// Export vers Déclaration 2044
+// ══════════════════════════════════════════════════════
+function envoyerVers2044() {
+  if (!entries.length) { showToast('Aucune dépense à exporter', 'error'); return; }
+
+  // Calculer la somme par case fiscale (L.xxx)
+  const caseSums = {};
+  entries.forEach(e => {
+    const cat = CATEGORIES[e.categorie];
+    if (!cat) return;
+    const sousCat = cat.sousCategories.find(sc => sc.id === e.sousCategorie);
+    if (!sousCat) return;
+    caseSums[sousCat.case] = (caseSums[sousCat.case] || 0) + e.montant;
+  });
+
+  // Stocker pour que index.html (dec2044ImportBilan) puisse le lire
+  localStorage.setItem('bailexpert_2044_import', JSON.stringify({
+    cases: caseSums,
+    date: new Date().toISOString(),
+    nbEntries: entries.length
+  }));
+
+  showToast('✓ Données envoyées — redirection...', 'success');
+  setTimeout(() => {
+    window.location.href = 'index.html?open=2044&import=1';
+  }, 900);
+}
+
+// ══════════════════════════════════════════════════════
+// Export CSV
+// ══════════════════════════════════════════════════════
+function exporterCSV() {
+  if (!entries.length) { showToast('Aucune dépense à exporter', 'error'); return; }
+  const rows = [['Date','Catégorie','Sous-catégorie','Case 2044','Montant','Bien','Description']];
+  entries.forEach(e => {
+    const cat = CATEGORIES[e.categorie] || {};
+    const sousCat = (cat.sousCategories || []).find(sc => sc.id === e.sousCategorie) || {};
+    rows.push([
+      new Date(e.date).toLocaleDateString('fr-FR'),
+      cat.label || '',
+      sousCat.label || '',
+      'L.' + (sousCat.case || ''),
+      e.montant.toFixed(2),
+      e.bien || '',
+      (e.description || '').replace(/,/g, ' ')
+    ]);
+  });
+  const csv = rows.map(r => r.join(',')).join('\n');
+  const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'charges_travaux_' + new Date().getFullYear() + '.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+  showToast('✓ CSV exporté', 'success');
+}
+
+// ══════════════════════════════════════════════════════
+// Toast
+// ══════════════════════════════════════════════════════
+let _tt;
+function showToast(msg, type='info') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show' + (type !== 'info' ? ' ' + type : '');
+  clearTimeout(_tt);
+  _tt = setTimeout(() => el.className = 'toast', 2500);
+}
+
+// ══════════════════════════════════════════════════════
+// Init
+// ══════════════════════════════════════════════════════
+document.getElementById('anneeActuelle').textContent = new Date().getFullYear();
+chargerEntries();
+chargerBiens();
+renderEntries();
+majResume();
+</script>
+</body>
+</html>
