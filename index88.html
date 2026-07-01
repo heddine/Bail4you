@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+<title>BailExpert Pro — Choisissez votre licence</title>
+<meta name="description" content="Débloquez BailExpert Pro. Contrats PDF illimités, quittances, état des lieux, bilan fiscal. Paiement sécurisé via PayPal.">
+<meta name="theme-color" content="#ff6600">
+<style>
+* { box-sizing:border-box; margin:0; padding:0; }
+body {
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  background:#fff8f3;
+  color:#1a0a00;
+  min-height:100vh;
+}
+
+/* HERO */
+.hero {
+  background:linear-gradient(135deg,#ff6600,#cc4400);
+  padding:40px 20px 32px;
+  text-align:center;
+}
+.logo-wrap {
+  width:76px; height:76px;
+  background:#fff;
+  border-radius:20px;
+  display:flex; align-items:center; justify-content:center;
+  margin:0 auto 16px;
+  box-shadow:0 8px 30px rgba(0,0,0,0.15);
+  font-size:14px; font-weight:900; color:#ff6600; letter-spacing:1px;
+}
+.hero h1 { font-size:28px; font-weight:900; color:#fff; letter-spacing:-0.5px; margin-bottom:6px; }
+.hero-sub { font-size:10px; color:rgba(255,255,255,0.7); letter-spacing:2px; text-transform:uppercase; margin-bottom:16px; }
+.hero-pill {
+  display:inline-flex; align-items:center; gap:6px;
+  background:rgba(255,255,255,0.2);
+  border:1.5px solid rgba(255,255,255,0.5);
+  color:#fff;
+  border-radius:20px; padding:6px 16px;
+  font-size:12px; font-weight:700;
+}
+
+/* PLANS GRID */
+.plans-wrap { padding:24px 16px 8px; max-width:460px; margin:0 auto; }
+.plans-title { font-size:11px; font-weight:800; color:#ff6600; letter-spacing:1.5px; text-transform:uppercase; text-align:center; margin-bottom:16px; }
+
+.plan-card {
+  background:#fff;
+  border:2px solid #ffe0c0;
+  border-radius:18px;
+  padding:18px 18px;
+  margin-bottom:14px;
+  box-shadow:0 4px 18px rgba(255,102,0,0.08);
+  position:relative;
+  transition:border-color .15s, box-shadow .15s;
+}
+.plan-card.featured {
+  border-color:#ff6600;
+  box-shadow:0 8px 30px rgba(255,102,0,0.18);
+}
+.plan-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:4px; }
+.plan-name { font-size:15px; font-weight:800; color:#1a0a00; }
+.plan-badge {
+  font-size:9px; font-weight:800; letter-spacing:0.5px; text-transform:uppercase;
+  background:#ff6600; color:#fff; padding:3px 10px; border-radius:20px;
+}
+.plan-badge.life { background:#0D47A1; }
+.plan-price-row { display:flex; align-items:baseline; gap:6px; margin:8px 0 4px; }
+.plan-price { font-size:34px; font-weight:900; color:#ff6600; line-height:1; }
+.plan-card.featured .plan-price { color:#cc4400; }
+.plan-unit { font-size:12px; color:#999; }
+.plan-desc { font-size:12px; color:#888; margin-bottom:14px; line-height:1.5; }
+
+.pp-btn {
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  width:100%;
+  background:linear-gradient(135deg,#0070ba,#003087);
+  border:none; border-radius:12px;
+  padding:13px 16px;
+  font-size:14px; font-weight:800; color:#fff;
+  cursor:pointer; text-decoration:none;
+  box-shadow:0 4px 16px rgba(0,112,186,0.25);
+  transition:transform 0.15s;
+}
+.pp-btn:active { transform:scale(0.97); }
+
+.pp-secure {
+  font-size:10px; color:#aaa;
+  text-align:center; margin-top:24px;
+  max-width:420px; margin-left:auto; margin-right:auto;
+  padding:0 16px;
+}
+
+/* FEATURES shared list */
+.features-shared {
+  max-width:420px; margin:20px auto 0; padding:18px 20px;
+  background:#fff3e0; border-radius:16px;
+}
+.features-shared .ft-title { font-size:11px; font-weight:800; color:#cc4400; letter-spacing:1px; text-transform:uppercase; margin-bottom:10px; text-align:center; }
+.features { display:flex; flex-direction:column; gap:9px; }
+.feat { display:flex; align-items:center; gap:10px; font-size:13px; color:#333; }
+.feat .ck { width:18px; height:18px; background:#ff6600; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; font-size:10px; font-weight:900; flex-shrink:0; }
+
+/* STEPS */
+.steps-wrap { padding:28px 16px; max-width:420px; margin:0 auto; }
+.steps-title { font-size:11px; font-weight:800; color:#ff6600; letter-spacing:1.5px; text-transform:uppercase; text-align:center; margin-bottom:18px; }
+.step { display:flex; gap:14px; margin-bottom:16px; align-items:flex-start; }
+.step-num {
+  width:32px; height:32px; flex-shrink:0;
+  background:#ff6600;
+  border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:14px; font-weight:900; color:#fff;
+}
+.step-t { font-size:14px; font-weight:700; margin-bottom:3px; color:#1a0a00; }
+.step-d { font-size:12px; color:#888; line-height:1.6; }
+.step-d code { background:#fff3e0; color:#cc4400; padding:1px 6px; border-radius:5px; font-family:monospace; font-size:11px; }
+
+/* FAQ */
+.faq-wrap { padding:0 16px 16px; max-width:420px; margin:0 auto; }
+.faq-title { font-size:11px; font-weight:800; color:#ff6600; letter-spacing:1.5px; text-transform:uppercase; text-align:center; margin-bottom:14px; }
+.faq-item {
+  background:#fff;
+  border:1px solid #ffe0c0;
+  border-radius:12px; padding:14px 16px; margin-bottom:10px;
+  box-shadow:0 2px 8px rgba(255,102,0,0.06);
+}
+.faq-q { font-size:13px; font-weight:700; color:#1a0a00; margin-bottom:6px; }
+.faq-a { font-size:12px; color:#666; line-height:1.65; }
+
+/* FOOTER */
+footer {
+  text-align:center; padding:24px 16px;
+  font-size:10px; color:#bbb;
+  border-top:1px solid #f0e0d0;
+  line-height:1.8;
+}
+footer a { color:#ff6600; text-decoration:none; }
+
+/* MODAL */
+.modal-bg { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:999; align-items:center; justify-content:center; padding:20px; backdrop-filter:blur(4px); }
+.modal-bg.open { display:flex; }
+.modal-box {
+  background:#fff;
+  border:2px solid #ff6600;
+  border-radius:20px; padding:28px 22px;
+  max-width:360px; width:100%; text-align:center;
+  box-shadow:0 20px 60px rgba(255,102,0,0.2);
+  animation:popIn 0.25s ease;
+}
+@keyframes popIn { from{transform:scale(0.92);opacity:0} to{transform:scale(1);opacity:1} }
+.modal-emoji { font-size:44px; margin-bottom:12px; }
+.modal-box h3 { font-size:20px; font-weight:900; color:#1a0a00; margin-bottom:10px; }
+.modal-box p { font-size:13px; color:#666; line-height:1.7; margin-bottom:8px; }
+.modal-box p strong { color:#ff6600; }
+.modal-close-btn {
+  width:100%; background:linear-gradient(135deg,#ff6600,#cc4400);
+  border:none; border-radius:12px; padding:14px;
+  color:#fff; font-size:14px; font-weight:800;
+  cursor:pointer; margin-top:14px;
+}
+
+.divider { display:flex; align-items:center; gap:12px; margin:0 16px 0; }
+.divider hr { flex:1; border:none; border-top:1px solid #f0e0d0; }
+.divider span { font-size:10px; color:#bbb; white-space:nowrap; }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="logo-wrap">BHSH</div>
+  <h1>BailExpert Pro</h1>
+  <div class="hero-sub">BHSH IMMO &mdash; Gestion locative</div>
+  <div class="hero-pill">&#10003; Paiement unique &middot; Sans abonnement</div>
+</div>
+
+<!-- PLANS -->
+<div class="plans-wrap">
+  <div class="plans-title">Choisissez votre licence</div>
+
+  <!-- Plan 1 bail -->
+  <div class="plan-card">
+    <div class="plan-top">
+      <div class="plan-name">1 bail</div>
+      <div class="plan-badge">Code suffixe 1</div>
+    </div>
+    <div class="plan-price-row">
+      <div class="plan-price">4<span style="font-size:18px">,99</span>&euro;</div>
+      <div class="plan-unit">/ 1 mois</div>
+    </div>
+    <div class="plan-desc">Débloque la génération PDF illimitée pour 1 bail actif pendant 30 jours.</div>
+    <a href="https://www.paypal.com/paypalme/heddine57/4.99" target="_blank" class="pp-btn" data-plan="1 bail — 4,99€">
+      &#x1F4B3; Payer 4,99 &euro; via PayPal
+    </a>
+  </div>
+
+  <!-- Plan 2 baux -->
+  <div class="plan-card">
+    <div class="plan-top">
+      <div class="plan-name">2 baux</div>
+      <div class="plan-badge">Code suffixe 2</div>
+    </div>
+    <div class="plan-price-row">
+      <div class="plan-price">6<span style="font-size:18px">,99</span>&euro;</div>
+      <div class="plan-unit">/ 1 mois</div>
+    </div>
+    <div class="plan-desc">Débloque la génération PDF illimitée pour 2 baux actifs pendant 30 jours.</div>
+    <a href="https://www.paypal.com/paypalme/heddine57/6.99" target="_blank" class="pp-btn" data-plan="2 baux — 6,99€">
+      &#x1F4B3; Payer 6,99 &euro; via PayPal
+    </a>
+  </div>
+
+  <!-- Plan 3 baux (featured) -->
+  <div class="plan-card featured">
+    <div class="plan-top">
+      <div class="plan-name">3 baux</div>
+      <div class="plan-badge">Code suffixe 3</div>
+    </div>
+    <div class="plan-price-row">
+      <div class="plan-price">7<span style="font-size:18px">,99</span>&euro;</div>
+      <div class="plan-unit">/ 1 mois</div>
+    </div>
+    <div class="plan-desc">Débloque la génération PDF illimitée pour 3 baux actifs pendant 30 jours. Le plus choisi.</div>
+    <a href="https://www.paypal.com/paypalme/heddine57/7.99" target="_blank" class="pp-btn" data-plan="3 baux — 7,99€">
+      &#x1F4B3; Payer 7,99 &euro; via PayPal
+    </a>
+  </div>
+
+  <!-- Plan lifetime -->
+  <div class="plan-card">
+    <div class="plan-top">
+      <div class="plan-name">Accès à vie</div>
+      <div class="plan-badge life">Code suffixe A</div>
+    </div>
+    <div class="plan-price-row">
+      <div class="plan-price">59<span style="font-size:18px">,00</span>&euro;</div>
+      <div class="plan-unit">paiement unique</div>
+    </div>
+    <div class="plan-desc">Tous les baux, à vie, sans renouvellement. Aucun abonnement ensuite.</div>
+    <a href="https://www.paypal.com/paypalme/heddine57/59" target="_blank" class="pp-btn" data-plan="Accès à vie — 59€">
+      &#x1F4B3; Payer 59 &euro; via PayPal
+    </a>
+  </div>
+
+  <div class="pp-secure">&#x1F512; Paiement sécurisé PayPal &middot; Données sur votre appareil uniquement</div>
+</div>
+
+<!-- FEATURES INCLUSES -->
+<div class="features-shared">
+  <div class="ft-title">Inclus dans toutes les licences</div>
+  <div class="features">
+    <div class="feat"><span class="ck">&#10003;</span> Contrats PDF illimités (vide, meublé, saisonnier)</div>
+    <div class="feat"><span class="ck">&#10003;</span> Quittances de loyer PDF</div>
+    <div class="feat"><span class="ck">&#10003;</span> État des lieux complet + photos</div>
+    <div class="feat"><span class="ck">&#10003;</span> Mise en demeure LRAR</div>
+    <div class="feat"><span class="ck">&#10003;</span> Bilan fiscal annuel PDF</div>
+    <div class="feat"><span class="ck">&#10003;</span> Charges &amp; Travaux 2044</div>
+    <div class="feat"><span class="ck">&#10003;</span> Signatures numériques</div>
+  </div>
+</div>
+
+<!-- STEPS -->
+<div class="steps-wrap">
+  <div class="steps-title">Comment &ccedil;a marche</div>
+
+  <div class="step">
+    <div class="step-num">1</div>
+    <div>
+      <div class="step-t">Choisissez et payez votre licence</div>
+      <div class="step-d">Cliquez sur le bouton correspondant. Paiement sécurisé en moins d'une minute.</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">2</div>
+    <div>
+      <div class="step-t">Recevez votre code sous 24h</div>
+      <div class="step-d">Code unique format <code>BHSH-XXXX-XXXX-XXXX</code> envoyé par email ou WhatsApp après confirmation du paiement.</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">3</div>
+    <div>
+      <div class="step-t">Activez dans l'app BailExpert</div>
+      <div class="step-d">Bannière orange &rarr; &laquo;&nbsp;Activer&nbsp;&raquo; &rarr; saisissez votre code. Débloqué instantanément.</div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"><hr><span>Questions fr&eacute;quentes</span><hr></div>
+
+<!-- FAQ -->
+<div class="faq-wrap" style="margin-top:16px">
+  <div class="faq-item">
+    <div class="faq-q">Quelle est la différence entre les offres ?</div>
+    <div class="faq-a">1, 2 ou 3 baux : accès mensuel renouvelable selon le nombre de baux actifs. Accès à vie : tous les baux, sans limite de durée, paiement unique.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">Je change d'appareil ?</div>
+    <div class="faq-a">Contactez-nous avec votre ancien code. Nouveau code fourni gratuitement.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">Délai de réception du code ?</div>
+    <div class="faq-a">Généralement dans l'heure. Maximum 24h ouvrées après confirmation PayPal.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">Mes données sont-elles sécurisées ?</div>
+    <div class="faq-a">L'app fonctionne entièrement hors connexion. Vos données restent sur votre appareil uniquement.</div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<div style="max-width:420px;margin:0 auto;padding:0 16px 24px">
+  <div style="font-size:11px;font-weight:800;color:#ff6600;letter-spacing:1.5px;text-transform:uppercase;text-align:center;margin-bottom:14px">Nous contacter</div>
+  <a href="mailto:bhbhdevcontact@gmail.com?subject=BailExpert Pro — Demande de licence" style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;background:#fff;border:1.5px solid #ffe0c0;border-radius:14px;padding:14px;font-size:14px;font-weight:700;color:#cc4400;text-decoration:none;margin-bottom:10px;box-shadow:0 2px 8px rgba(255,102,0,0.08)">
+    &#x2709;&#xFE0F; bhbhdevcontact@gmail.com
+  </a>
+  <a href="https://wa.me/33769777152?text=Bonjour%2C%20je%20souhaite%20obtenir%20un%20code%20de%20licence%20BailExpert%20Pro." target="_blank" style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;background:#25d366;border:none;border-radius:14px;padding:14px;font-size:14px;font-weight:700;color:#fff;text-decoration:none;box-shadow:0 4px 15px rgba(37,211,102,0.3)">
+    &#x1F4AC; WhatsApp — +33 7 69 77 71 52
+  </a>
+  <div style="font-size:10px;color:#aaa;text-align:center;margin-top:10px">Réponse sous 24h · Envoyez votre confirmation PayPal</div>
+</div>
+
+<footer>
+  &copy; 2026 BHSH IMMO &middot; BailExpert Pro<br>
+  Conformit&eacute; loi ALUR N&deg;2014-366<br>
+  <a href="privacy.html">Politique de confidentialit&eacute;</a>
+</footer>
+
+<!-- MODAL CONFIRMATION -->
+<div class="modal-bg" id="confirmModal">
+  <div class="modal-box">
+    <div class="modal-emoji">&#x1F389;</div>
+    <h3>Merci !</h3>
+    <p id="modalPlanText">Votre code <strong>BHSH-XXXX-XXXX-XXXX</strong> vous sera envoyé <strong>sous 24h</strong> après confirmation du paiement PayPal.</p>
+    <p>Conservez votre email de confirmation PayPal comme référence.</p>
+    <button class="modal-close-btn" onclick="document.getElementById('confirmModal').classList.remove('open')">Compris &#10003;</button>
+  </div>
+</div>
+
+<script>
+document.querySelectorAll('.pp-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var plan = btn.getAttribute('data-plan') || '';
+    setTimeout(function() {
+      document.getElementById('confirmModal').classList.add('open');
+    }, 2500);
+  });
+});
+</script>
+
+</body>
+</html>
