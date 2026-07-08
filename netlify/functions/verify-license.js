@@ -1,7 +1,12 @@
 // netlify/functions/verify-license.js
-const crypto = require('crypto');
+// Vérifie un code de licence côté serveur ET limite le nombre d'appareils
+// pouvant activer un même code (anti-partage), via Netlify Blobs.
 
-const DUREE_JOURS = { '1': 30, '2': 30, '3': 30, 'A': 36500 };
+const crypto = require('crypto');
+const { getStore } = require('@netlify/blobs');
+
+const DUREE_JOURS = { '1': 30, '2': 30, '3': 30, '4': 30 };
+const MAX_ACTIVATIONS = 3; // quota souple : couvre changement de tel + réinstall + 2e appareil
 
 function computeChecksum(block2, block3, plan, secret) {
   const hmac = crypto.createHmac('sha256', secret)
@@ -34,7 +39,7 @@ exports.handler = async (event) => {
   }
 
   const [, block2, block3, block4] = parts;
-  if (!/^[A-Z0-9]{4}$/.test(block2) || !/^[A-Z0-9]{4}$/.test(block3) || !/^[A-Z0-9]{3}[123A]$/.test(block4)) {
+  if (!/^[A-Z0-9]{4}$/.test(block2) || !/^[A-Z0-9]{4}$/.test(block3) || !/^[A-Z0-9]{3}[1234]$/.test(block4)) {
     return { statusCode: 200, body: JSON.stringify({ valid: false, error: 'Format de code invalide' }) };
   }
 
@@ -44,6 +49,30 @@ exports.handler = async (event) => {
 
   if (providedChecksum !== expectedChecksum) {
     return { statusCode: 200, body: JSON.stringify({ valid: false, error: 'Code invalide' }) };
+  }
+
+  // ── Contrôle anti-partage : quota d'activations par code ──────────────
+  try {
+    const store = getStore({ name: 'license-activations', consistency: 'strong' });
+    let record = await store.get(code, { type: 'json' });
+    if (!record) record = { count: 0, firstUsed: new Date().toISOString() };
+
+    if (record.count >= MAX_ACTIVATIONS) {
+      return {
+        statusCode: 200,
+        body: JSON.stringify({
+          valid: false,
+          error: 'Ce code a atteint sa limite de ' + MAX_ACTIVATIONS + ' appareils. Contactez le support pour assistance.'
+        })
+      };
+    }
+
+    record.count += 1;
+    record.lastUsed = new Date().toISOString();
+    await store.setJSON(code, record);
+  } catch (e) {
+    // En cas de panne du stockage, on n'empêche pas l'activation légitime
+    console.error('Blobs error:', e.message);
   }
 
   return {

@@ -1,7 +1,7 @@
 // netlify/functions/generate-license.js
 // Génère un code de licence signé. Réservé à un usage ADMIN (vous).
 // Appel : https://votresite.netlify.app/.netlify/functions/generate-license?key=VOTRE_ADMIN_KEY&plan=1
-//   plan = 1 | 2 | 3 | A   (A = à vie / tous baux)
+//   plan = 1 | 2 | 3 | 4
 //
 // Variables d'environnement à définir sur Netlify (Site settings > Environment variables) :
 //   LICENSE_SECRET  -> une longue chaîne aléatoire, ex: générée avec `openssl rand -hex 32`
@@ -9,7 +9,7 @@
 
 const crypto = require('crypto');
 
-const DUREE_JOURS = { '1': 30, '2': 30, '3': 30, 'A': 36500 }; // 'A' = quasi illimité
+const DUREE_JOURS = { '1': 30, '2': 30, '3': 30, '4': 30 };
 
 function randomBlock(len = 4) {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // sans 0/O/1/I pour éviter confusion
@@ -40,7 +40,7 @@ exports.handler = async (event) => {
 
   const plan = (params.plan || '').toUpperCase();
   if (!DUREE_JOURS[plan]) {
-    return { statusCode: 400, body: JSON.stringify({ error: 'Plan invalide. Utilisez 1, 2, 3 ou A.' }) };
+    return { statusCode: 400, body: JSON.stringify({ error: 'Plan invalide. Utilisez 1, 2, 3 ou 4.' }) };
   }
 
   const block2 = randomBlock(4);
