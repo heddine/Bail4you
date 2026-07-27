@@ -1,1 +1,13 @@
-.well-known/assetlinks.json
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.bhsh.bailexpert",
+      "sha256_cert_fingerprints": [
+        "05:14:3B:B9:3D:00:6A:BF:AA:5D:65:7B:78:99:05:F6:25:09:C7:E3:01:57:F0:63:58:89:24:15:E4:60:63:13",
+        "0A:3B:E0:2C:FF:F7:5A:29:B1:D4:1B:11:97:10:95:A0:3C:4D:41:8F:5C:46:39:45:39:6A:32:A2:06:FE:79:13"
+      ]
+    }
+  }
+]
