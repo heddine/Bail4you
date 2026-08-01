@@ -2,8 +2,8 @@
   "name": "BailExpert",
   "short_name": "BailExpert",
   "description": "Générateur de contrats de bail ALUR gratuit",
-  "start_url": "./index.html",
-  "scope": "./",
+  "start_url": "/Bail4you/",
+  "scope": "/Bail4you/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#0B4FE0",
@@ -11,13 +11,13 @@
   "lang": "fr",
   "icons": [
     {
-      "src": "./icon.png",
+      "src": "/Bail4you/icon.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "./icon-maskable.png",
+      "src": "/Bail4you/icon-maskable.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
@@ -25,12 +25,12 @@
   ],
   "screenshots": [
     {
-      "src": "./feature-graphic-1.png",
+      "src": "/Bail4you/feature-graphic-1.png",
       "sizes": "1024x500",
       "type": "image/png",
       "form_factor": "wide",
       "label": "BailExpert - Contrat de bail ALUR"
-    
     }
   ]
 }
+
